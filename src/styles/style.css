@@ -1,0 +1,354 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+@keyframes snack-bar-animation {
+    from {
+        top: 0px;
+    }
+
+    to {
+        top: 18px;
+    }
+}
+
+@keyframes render-products {
+    from {
+        opacity: 0.0;
+    }
+
+    to {
+        opacity: 1.0;
+    }
+}
+
+@keyframes open-modal {
+    from {
+        top: 0px;
+    }
+
+    to {
+        top: 80px;
+    }
+}
+
+@keyframes visible {
+    from {
+        top: 0px;
+    }
+
+    to {
+        top: 10px;
+    }
+}
+
+body {
+    font-family: "Roboto", sans-serif;
+    background-color: #131515;
+    color: #fff;
+}
+
+#title span {
+    color: #ffb703;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.snack-bar {
+    position: fixed;
+    width: 300px;
+    top: 18px;
+    border-radius: 8px;
+    text-align: center;
+    background-color: #212529;
+    padding: 8px;
+    color: #fff;
+    animation-name: snack-bar-animation;
+    animation-duration: 1s;
+    animation-timing-function: ease;
+    z-index: 9;
+}
+
+.card-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background-color: #fff;
+    width: 60%;
+    margin-bottom: 10px;
+    color: #000;
+    border-radius: 6px;
+    padding: 5px;
+    animation-name: render-products;
+    animation-duration: 1s;
+}
+
+.card img {
+    width: 200px;
+}
+
+.card button {
+    width: 100px;
+    background-color: #fca311;
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 0;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.card button:hover {
+    opacity: 0.8;
+}
+
+.card h1 {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.card h3 {
+    font-size: 16px;
+    font-weight: 500;
+    position: relative;
+    top: 10px;
+    animation-name: visible;
+    animation-duration: 0.5s;
+    animation-timing-function: ease;
+}
+
+.card p {
+    font-size: 30px;
+    font-weight: 500;
+}
+
+.category {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.category select {
+    width: 150px;
+    padding: 5px;
+    border: none;
+    border-radius: 10px;
+    background-color: #343a40;
+    margin-bottom: 10px;
+    color: #fff;
+    margin-left: 5px;
+}
+
+.modal {
+    position: fixed;
+    top: 80px;
+    width: 80%;
+    height: 80%;
+    background-color: #fff;
+    border-radius: 8px;
+    animation-name: open-modal;
+    animation-duration: 1s;
+    animation-timing-function: ease;
+    overflow: auto;
+    z-index: 9;
+}
+
+.open-modal button {
+    border: 0;
+    width: 60px;
+    height: 60px;
+    padding: 5px;
+    border-radius: 100%;
+    position: fixed;
+    background-color: #ffb703;
+    top: 85%;
+    left: 90%;
+    z-index: 9;
+}
+
+.open-modal button:hover {
+    opacity: 0.8;
+    cursor: pointer;
+}
+
+#open-modal-button img {
+    width: 30px;
+}
+
+.close-modal {
+    display: flex;
+    justify-content: end;
+    align-items: center;
+}
+
+.close-modal button {
+    width: 25px;
+    height: 25px;
+    border: 0;
+    margin-right: 10px;
+    margin-top: 10px;
+    padding: 5px;
+    border-radius: 100%;
+}
+
+.close-modal button:hover {
+    cursor: pointer;
+    background-color: #ef233c;
+}
+
+.modal-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.cart-card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 60%;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    color: #000;
+    padding: 5px;
+    box-shadow: 0px 0px 4px 0px #000;
+}
+
+.cart-card h1 {
+    font-size: 16px;
+}
+
+.cart-card img {
+    width: 200px;
+}
+
+.cart-card p {
+    font-size: 25px;
+    color: #007200;
+    font-weight: 900;
+}
+
+.description-button {
+    margin-bottom: 10px;
+}
+
+.description-button:hover {
+    cursor: pointer;
+}
+
+.description-button img {
+    width: 25px;
+}
+
+.cart-card img {
+    width: 150px;
+}
+
+.cart-card button {
+    width: 40px;
+    height: 40px;
+    background-color: #ef233c;
+    border-radius: 100%;
+    border: none;
+}
+
+.cart-card button:hover {
+    cursor: pointer;
+    opacity: 0.8;
+}
+
+.trash-button img {
+    width: 25px;
+}
+
+.trash-container {
+    width: 100%;
+    display: flex;
+    justify-content: end;
+    margin-right: 9px;
+}
+
+.modal-container h1 {
+    color: #000;
+}
+
+#total {
+    display: flex;
+    text-align: center;
+}
+
+#total h1 {
+    font-size: 40px;
+    color: #008000;
+}
+
+#total img {
+    margin-right: 4px;
+    width: 29px;
+}
+
+.search {
+    display: flex;
+    margin-bottom: 5px;
+}
+
+#search-input {
+    width: 300px;
+    height: 30px;
+    border-radius: 8px;
+    margin-left: 20px;
+    border: none;
+    transition: 0.5s ease;
+}
+
+#search-input:focus {
+    width: 350px;
+}
+
+#search-button {
+    width: 35px;
+    height: 35px;
+    border-radius: 100%;
+    margin-left: 5px;
+    border: none;
+    background-color: #fdc500;
+}
+
+
+#search-button:hover {
+    background-color: #ffaa00;
+    cursor: pointer;
+}
+
+@media (max-width: 500px) {
+    .card {
+        width: 85%;
+    }
+
+    .card h3 {
+        font-size: 16px;
+    }
+
+    .open-modal button {
+        top: 90%;
+        left: 80%;
+    }
+
+    .modal {
+        width: 90%;
+    }
+}

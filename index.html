@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/src/styles/style.css">
+    <link rel="icon" href="/src/icons/store-icon.svg" type="svg">
+    <script>
+        //Limpa o cache
+        localStorage.clear();
+    </script>
+    <title>Store JS</title>
+</head>
+
+<body onload="request('all')">
+    <div class="container">
+        <h1 id="title">Store <span>JS</span></h1>
+        <div class="search">
+            <input id="search-input" placeholder="Search product">
+            <button id="search-button"><img src="/src/icons/search-icon.svg" /></button>
+        </div>
+        <div class="modal" hidden>
+            <div class="close-modal">
+                <button id="close-modal-button">X</button>
+            </div>
+            <div class="modal-container">
+                <div id="total">
+                    <img src="/src/icons/money-bill-icon.svg">
+                    <h1 id="price"></h1>
+                </div>
+            </div>
+        </div>
+        <div class="snack-bar" hidden>
+        </div>
+        <div class="open-modal">
+            <button id="open-modal-button"><img src="/src/icons/cart-icon.svg" /></button>
+        </div>
+        <div class="category">
+            <select id="category-select">
+                <option value="all">All</option>
+                <option value="gaming">Gaming</option>
+                <option value="audio">Audio</option>
+                <option value="appliances">Appliances</option>
+                <option value="mobile">Mobile</option>
+                <option value="laptop">Laptop</option>
+                <option value="tv">Tv</option>
+            </select>
+            <div class="card-container">
+
+            </div>
+        </div>
+    </div>
+    <script src="/src/scripts/render-products.js"></script>
+</body>
+
+</html>
