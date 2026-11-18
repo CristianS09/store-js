@@ -20,4 +20,4 @@ Aplicação web E-commerce com interface elegante que possui barra de pesquisa, 
 </div>
 
 ### Recursos externos utilizados:
-- **[Fake Store Api](https://fakestoreapi.in/)** 
+- **[Fake Store Api](https://fakestoreapi.com/)** 
