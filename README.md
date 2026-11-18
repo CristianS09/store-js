@@ -2,9 +2,9 @@
 
 Aplicação web E-commerce com interface elegante que possui barra de pesquisa, carrinho e categoria.
 
-[![inicio.png](https://i.postimg.cc/90z32WcS/inicio.png)](https://postimg.cc/LgdQBFYB)
+[![inicio.png](https://i.ibb.co/zVwmyhYz/store-js1.png)
 
-[![carrinho.png](https://i.postimg.cc/y6cPvDcb/carrinho.png)](https://postimg.cc/XXNdv72f)
+[![carrinho.png](https://i.ibb.co/n2HzNwn/store-js2.png)
 
 - [Link do projeto](https://store-js-eta.vercel.app/)
 
