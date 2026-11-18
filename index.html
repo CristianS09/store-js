@@ -4,54 +4,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/src/styles/style.css">
-    <link rel="icon" href="/src/icons/store-icon.svg" type="svg">
-    <script>
-        //Limpa o cache
-        localStorage.clear();
-    </script>
+    <!--Importa CSS-->
+    <link rel="stylesheet" href="./src/styles/style.css">
+    <link rel="icon" href="./src/icons/store-icon.svg" type="svg">
     <title>Store JS</title>
+    <!--Importa icones do font-awesome-->
+    <script src="https://kit.fontawesome.com/80b8896d15.js" crossorigin="anonymous"></script>
 </head>
 
-<body onload="request('all')">
-    <div class="container">
-        <h1 id="title">Store <span>JS</span></h1>
-        <div class="search">
-            <input id="search-input" placeholder="Search product">
-            <button id="search-button"><img src="/src/icons/search-icon.svg" /></button>
-        </div>
-        <div class="modal" hidden>
-            <div class="close-modal">
-                <button id="close-modal-button">X</button>
-            </div>
-            <div class="modal-container">
-                <div id="total">
-                    <img src="/src/icons/money-bill-icon.svg">
-                    <h1 id="price"></h1>
-                </div>
-            </div>
-        </div>
-        <div class="snack-bar" hidden>
-        </div>
-        <div class="open-modal">
-            <button id="open-modal-button"><img src="/src/icons/cart-icon.svg" /></button>
-        </div>
-        <div class="category">
-            <select id="category-select">
-                <option value="all">All</option>
-                <option value="gaming">Gaming</option>
-                <option value="audio">Audio</option>
-                <option value="appliances">Appliances</option>
-                <option value="mobile">Mobile</option>
-                <option value="laptop">Laptop</option>
-                <option value="tv">Tv</option>
-            </select>
-            <div class="card-container">
+<body>
+    <!--Barra de navegação-->
+    <nav>
+        <ul>
+            <li>
+                <h1 id="title">Store <span>JS</span></h1>
+            </li>
+            <li>
+                <button id="button-theme" onclick="changeTheme()">Mudar Tema</button>
+            </li>
+        </ul>
+    </nav>
 
+    <!--Snack bar para alertas-->
+    <div id="snack-bar-container" hidden>
+    </div>
+
+    <!--Container do botão e quantidade de produtos no carrinho-->
+    <div id="button-cart-container">
+        <button id="cart-button" onclick="openModal()"><i class="fa-solid fa-cart-shopping"></i></button>
+        <!--Contagem de produtos no carrinho-->
+        <span id="count-badge">0</span>
+    </div>
+
+    <!--Modal dos produtos no carrinho-->
+    <div id="cart-modal">
+        <div id="modal">
+            <!--Cabeçalho do modal-->
+            <div id="modal-header">
+                <h2><i class="fa-solid fa-cart-shopping"></i> Carrinho</h2>
+                <!--Botão para fechar o modal-->
+                <button id="close-button" onclick="closeModal()">Fechar <i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <span id="total">Total 0$</span>
+            <!--Corpo do modal-->
+            <div id="modal-body">
+            </div>
+
+            <!--Rodapé do modal-->
+            <div id="modal-footer">
+                <!--Botão para finalizar o carrinho-->
+                <button id="finish-button" onclick="finishCart()"><i class="fa-solid fa-check"></i> Finalizar
+                    Compra</button>
+                <button id="remove-button" onclick="removeProducts()">Remover produtos <i
+                        class="fa-solid fa-trash"></i></button>
             </div>
         </div>
     </div>
-    <script src="/src/scripts/render-products.js"></script>
+
+    <!--Container principal-->
+    <div class="container">
+        <!--Barra de pesquisa-->
+        <div id="search">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input id="search-input" placeholder="Buscar produto" oninput="searchProduct(this.value)">
+        </div>
+
+        <!--Container dos cards dos produtos-->
+        <div id="card-products-container">
+            <div id="loading"></div>
+        </div>
+    </div>
+
+    <!--Importa JavaScript-->
+    <script src="./src/scripts/render-products.js"></script>
 </body>
 
 </html>

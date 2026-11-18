@@ -1,205 +1,278 @@
-//Obtem o snack bar
-const snackBar = document.querySelector('.snack-bar');
-//Valores da lista select
-const categorySelect = document.querySelector('#category-select');
-//Desativa o snack bar
-const modal = document.querySelector('.modal');
-//Fecha o modal
-const closeModalButton = document.querySelector('#close-modal-button');
-//Abre o modal
-const openModalButton = document.querySelector('#open-modal-button');
+//Obtem o container da snack bar
+const snackBarContainer = document.getElementById('snack-bar-container');
+//Modal do carrinho.
+const cartModal = document.getElementById('cart-modal');
+cartModal.style.visibility = 'hidden';
+//Corpo do modal
+const modalBody = document.getElementById('modal-body');
 //Pesquisa produto
 const searchProductButton = document.querySelector('#search-button');
+//Obtém o container dos cards dos produtos.
+const cardProductsContainer = document.getElementById('card-products-container');
+//Botão de alterar o tema.
+const buttonTheme = document.getElementById('button-theme');
+//Elemento loading.
+const loading = document.getElementById('loading');
+//Contagem de produtos no carrinho.
+const countBadge = document.getElementById('count-badge');
+//Total dos itens do carrinho do span.
+const totalSpan = document.getElementById('total');
+//Total dos itens do carrinho.
+let total = 0;
 
-//Requisição api
-async function request(category) {
-    try {
-        const result = await fetch('https://fakestoreapi.in/api/products?limit=150');
-        const products = await result.json();
-        render(products.products, category);
-    } catch (e) {
-        snackBarMessage('An error occurred while accessing the data.');
-    }
-}
 
-//Mensagem da Snack Bar
-function snackBarMessage(message) {
-    snackBar.hidden = false;
-    snackBar.innerHTML = `<p>${message}</p>`;
-    setTimeout(() => {
-        snackBar.hidden = true;
-    }, 4000);
-}
+//Oculta botão de abrir o carrinho.
+document.getElementById('button-cart-container').style.visibility = 'hidden';
 
-//Adiciona um produto no carrinho
-function cart(product) {
+//Produtos no carrinho.
+let cartProductsList = [];
 
-    snackBarMessage('Product add to cart!');
+//Gera produtos do carrinho.
+function rendercartProductsList() {
+    //Reseta valores
+    modalBody.innerHTML = '';
+    //Gera elementos para cada produto adiciona no carrinho.
+    cartProductsList.forEach((product) => {
+        const { title, image, price } = product;
 
-    const { title, price, image } = product;
+        //Container dos produtoss.
+        const productDiv = document.createElement('div');
 
-    const modalContainer = document.querySelector('.modal-container');
-    const cartCard = document.createElement('div');
+        //Define classe de estilo.
+        productDiv.className = 'products-cart';
 
-    cartCard.className = 'cart-card';
 
-    //Cria elementos HTML
-    const htmlTitle = document.createElement('h1');
-    const htmlPrice = document.createElement('p');
-    const htmlImage = document.createElement('img');
-    const trashButton = document.createElement('button');
-    const trashDiv = document.createElement('div');
-    const total = document.querySelector('#price');
+        //Cria elementos.
+        const productTitle = document.createElement('p');
+        const productImage = document.createElement('img');
+        const productPrice = document.createElement('p');
 
-    //Adiciona os valores aos elementos
-    trashButton.innerHTML = "<img src='/src/icons/trash-icon.svg'/>";
-    trashButton.classList = 'trash-button';
-    htmlTitle.innerHTML = title;
-    htmlPrice.innerHTML = `$${price}`;
-    htmlImage.src = image;
-    trashDiv.appendChild(trashButton);
-    trashDiv.classList = 'trash-container';
-    //Desativa a opção de arrastar imagem
-    htmlImage.draggable = false;
-    //Imagem não disponivel caso ocorra um erro
-    htmlImage.onerror = () => {
-        htmlImage.src = '/src/icons/image-not-found.svg';
-    }
+        //Define conteúdo dos elementos
+        productTitle.innerText = title;
+        productImage.src = image;
+        productPrice.innerText = price.toFixed(2) + '$';
 
-    try {
-        let value;
-        //Armazena o valor dos produtos em cache
-        if (localStorage.getItem('value') !== null) {
-            value = parseInt(localStorage.getItem('value')) + price;
-            localStorage.setItem('value', value);
-        } else {
-            value = localStorage.setItem('value', price);
-        }
-
-    } catch (e) {
-        snackBarMessage('An error occurred while calculating the products.');
-    }
-
-    total.innerHTML = '$' + localStorage.getItem('value');
-    //Remove produto do carrinho
-    trashButton.addEventListener('click', () => {
-        cartCard.remove();
-        localStorage.setItem('value', parseInt(localStorage.getItem('value')) - price);
-        total.innerHTML = '$' + localStorage.getItem('value');
-        if (localStorage.getItem('value') <= 0) {
-            //Fecha o modal se o mesmo não tiver produtos
-            closeModal();
-        }
+        //Insere elementos.
+        productDiv.append(productImage, productTitle, productPrice);
+        modalBody.appendChild(productDiv);
     });
-    cartCard.append(trashDiv, htmlImage, htmlTitle, htmlPrice);
-    modalContainer.appendChild(cartCard);
 }
 
-//Busca produtos
-function searchProduct() {
-    const searchInput = document.querySelector('#search-input');
-    if (!searchInput.value) {
-        snackBarMessage('The research field cannot be null.');
-    } else {
-        request(searchInput.value);
-        searchInput.value = null;
-    }
-}
-
-//Fecha o modal
+//Fecha modal do carrinho.
 function closeModal() {
-    modal.hidden = true;
-    openModalButton.hidden = false;
+    cartModal.style.visibility = 'hidden';
+    //Ativa barra de rolagem.
     document.body.style.overflowY = 'visible';
 }
 
-//Abre o modal
+//Abre modal do carrinho.
 function openModal() {
-    if (localStorage.getItem('value') === null || localStorage.getItem('value') <= 0) {
-        snackBarMessage('The cart is empty!');
-    } else {
-        modal.hidden = false;
-        openModalButton.hidden = true;
-        //Desativa a barra de rolagem do body.
-        document.body.style.overflowY = 'hidden';
+    //Reseta ação de ao clicar no modal.
+    cartModal.addEventListener('click', null);
+    cartModal.style.visibility = 'visible';
+    //Desativa barra de rolagem.
+    document.body.style.overflowY = 'hidden';
+    rendercartProductsList();
+}
+
+//Atualiza o campo de preço;
+function setTotal(price) {
+    totalSpan.innerText = 'Total: ' + parseFloat(price).toFixed(2) + '$';
+}
+
+//Remove produtos
+function removeProducts() {
+    const result = confirm('Deseja remover os produtos do carrinho?');
+    //Se verdadeiro remove produtos.
+    if (result) {
+        cartProductsList = [];
+
+        //Oculta botão de adicionar produtos no carrinho;
+        document.getElementById('button-cart-container').style.visibility = 'hidden';
+        snackBarMessage('Produtos Removidos');
+        closeModal()
+        //Zera total.
+        total = 0;
+    } else { }
+}
+
+//Requisição api
+async function request() {
+    try {
+        //Realiza requisição.
+        const result = await fetch('https://fakestoreapi.com/products');
+        const products = await result.json();
+        //Chama função de renderizar os produtos.
+        renderProducts(products);
+    } catch (err) {
+        console.log(err);
+        snackBarMessage('Ocorreu um erro ao obter os dados.', 'error');
+    } finally {
+        loading.hidden = true;
     }
 }
 
-//Renderiza os produtos na tela
-function render(products, value) {
-    //Obtem o card container
-    const container = document.querySelector('.card-container');
-    container.innerHTML = '';
-    //Verifica se existe produtos na categoria que seja igual ao value
-    const listNull = products.filter((product) => product.category === value);
-    //Obtem a lista com o resultado
-    let result;
-    //Retorna todos os produtos
-    if (value === 'all') {
-        result = products;
-        //Retorna todos os produtos da categoria com o valor do select
-    } else if (listNull.length !== 0) {
-        result = products.filter((product) => product.category === value);
-        //Retorna produtos caso exista produtos igual ao valor pesquisado
+//Carrega tema.
+function loadingTheme() {
+    //Obtém tema armazenado.
+    const storageTheme = localStorage.getItem('theme');
+    //Se theme for nulo define tema escuro, se não define tema armazenado.
+    if (storageTheme === null) {
+        document.body.className = 'dark';
+        buttonTheme.innerHTML = '<i class="fa-solid fa-sun"></i>';
+        //Armazena tema escuro.
+        localStorage.setItem('theme', 'dark');
     } else {
-        result = products.filter((product) => product.title.toLowerCase().includes(value.toLowerCase()));
-        if (result.length === 0) {
-            snackBarMessage('Sorry, product not found.');
-            request('all');
-        }
+        document.body.className = storageTheme;
+        storageTheme === 'dark' ? buttonTheme.innerHTML = '<i class="fa-solid fa-sun"></i>' : buttonTheme.innerHTML = '<i class="fa-solid fa-moon"></i>'
+    }
+}
+
+//Muda tema.
+function changeTheme() {
+    //Obtém tema armazenado,
+    const storageTheme = localStorage.getItem('theme');
+    //Se for tema escuro define como claro, se não define como escuro.
+    if (storageTheme === 'dark') {
+        localStorage.setItem('theme', 'light');
+        buttonTheme.innerHTML = '<i class="fa-solid fa-moon"></i>';
+        document.body.className = 'light';
+    } else {
+        localStorage.setItem('theme', 'dark');
+        buttonTheme.innerHTML = '<i class="fa-solid fa-sun"></i>'
+        document.body.className = 'dark';
+    }
+}
+
+
+//Adicona o produto ao carrinho
+function addProductToCart(product) {
+    const { title, image, price, id } = product;
+
+    //Mostra botão de adicionar produtos no carrinho;
+    document.getElementById('button-cart-container').style.visibility = 'visible';
+
+    //Verifica se o produto já foi adiconado no carrinho.
+    if (cartProductsList.find((e) => e.id === product.id)) {
+        snackBarMessage('Produto já adicionado ao carrinho.', 'error')
+        return;
     }
 
-    //Cria um card para cada produto  
-    result.map((product) => {
-        const { title, price, description, image } = product;
+    //Adiciona produto no carrinho.
+    cartProductsList.push({ id: id, title: title, image: image, price: price });
+    snackBarMessage('Produto Adicionado ao carrinho.')
+    //Adicona contagem de produtos no carrinho.
+    countBadge.innerText = cartProductsList.length;
+    //Calcula total dos intens ao inserir.
+    total += price;
+    setTotal(total);
+}
+
+//Renderiza produtos.
+function renderProducts(products) {
+    //Gera card de produtos para cada objeto da api.
+    products.forEach((product) => {
         const card = document.createElement('div');
-        card.classList = 'card';
+        card.className = 'card';
+        //Cria elemento h3 com o título do produto.
+        const title = document.createElement('h3');
+        title.innerText = product.title;
+        //Cria elemento h5 com o preço do produto.
+        const price = document.createElement('h5');
+        price.innerText = product.price.toFixed(2) + '$';
+        //Cria elemento p com a descrição do produto.
+        const description = document.createElement('p');
+        description.innerText = product.description;
+        //Imagem do produto.
+        const image = document.createElement('img');
+        image.src = product.image;
+        //Exibe avaliação do produto.
+        const productRating = document.createElement('div');
+        //Botão para adiconar o produto no carrinho.
+        const addToCartButton = document.createElement('button');
+        addToCartButton.className = 'add-to-cart-button';
+        addToCartButton.innerHTML = 'Adiconar ao carrinho <i class="fa-solid fa-cart-plus"></i>';
+        //Chama função para adiconar produtos no carrinho.
+        addToCartButton.addEventListener('click', () => addProductToCart(product));
+        //Insere elementos no body.
+        const cardBody = document.createElement('div');
+        cardBody.className = 'card-body';
+        //Armazena avaliações dos produtos.
+        const rating = parseInt(product.rating.rate);
 
-        //Cria os elementos HTML
-        const htmlTitle = document.createElement('h1');
-        const htmlDescription = document.createElement('h3');
-        const htmlPrice = document.createElement('p');
-        const htmlImage = document.createElement('img');
-        const button = document.createElement('button');
-        const hiddenDescription = document.createElement('div');
-
-
-        //Adiciona os valores aos elementos
-        htmlTitle.innerHTML = title;
-        htmlDescription.innerHTML = description;
-        htmlDescription.hidden = true;
-        htmlPrice.innerHTML = `$${price}`;
-        htmlImage.src = image;
-        htmlImage.alt = title;
-        //Desativa a opção de arrastar imagem
-        htmlImage.draggable = false;
-        //Imagem não disponivel caso ocorra um erro
-        htmlImage.onerror = () => {
-            htmlImage.src = '/src/icons/image-not-found.svg';
-        };
-        button.innerHTML = '<b>Add to cart</b>';
-        hiddenDescription.innerHTML = "<img src='/src/icons/caret-up.svg'/>";
-        hiddenDescription.classList = 'description-button';
-        hiddenDescription.addEventListener('click', () => {
-            const hidden = htmlDescription.hidden;
-            if (hidden) {
-                htmlDescription.hidden = false;
-                hiddenDescription.style.transform = 'rotate(180deg)';
-            } else if (!hidden) {
-                htmlDescription.hidden = true;
-                hiddenDescription.style.transform = 'rotate(360deg)';
-            }
-        });
-        button.addEventListener('click', () => cart(product));
-
-        card.append(htmlTitle, htmlImage, htmlPrice, hiddenDescription, htmlDescription, button);
-        container.appendChild(card);
-    }
-    );
+        //Gera números de estrelas de acordo com avaliação.
+        switch (rating) {
+            case 1:
+                productRating.innerHTML = '<i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i>';
+                break;
+            case 2:
+                productRating.innerHTML = '<i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i>';
+                break;
+            case 3:
+                productRating.innerHTML = '<i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i>';
+                break;
+            case 4:
+                productRating.innerHTML = '<i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>';
+                break;
+            case 5:
+                productRating.innerHTML = '<i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>';
+                break;
+        }
+        //Insere elementos no body.
+        cardBody.append(title, image, description, price, productRating, addToCartButton);
+        //Insere body no card.
+        card.appendChild(cardBody);
+        //Insere card no container.
+        cardProductsContainer.appendChild(card);
+    });
 }
 
-closeModalButton.addEventListener('click', closeModal);
-openModalButton.addEventListener('click', openModal);
-searchProductButton.addEventListener('click', searchProduct);
-//Troca os itens de acordo com a categoria
-categorySelect.addEventListener('change', () => request(categorySelect.value));
+//Mensagem da Snack Bar
+function snackBarMessage(message, status) {
+    const snackBar = document.createElement('div');
+    snackBar.className = 'snack-bar';
+    if (status === 'error') {
+        snackBar.innerHTML = `<p><i class="fa-solid fa-circle-xmark" style="color: rgb(230, 99, 133);"></i>${message}</p>`;
+    } else {
+        snackBar.innerHTML = `<p><i class="fa-solid fa-circle-check" style="color: rgb(99, 230, 190);"></i>
+      ${message}</p>`;
+    }
+
+    snackBarContainer.appendChild(snackBar);
+
+    setTimeout(() => {
+        snackBar.remove();
+    }, 2000);
+}
+
+//Finaliza a compra
+function finishCart() {
+    const result = confirm('Deseja finalizar a compra?');
+    //Exibe mensagem,fecha modal e zera lista.
+    if (result) {
+        snackBarMessage('Compra finaliza!');
+        closeModal();
+        //Oculta botão de abrir o carrinho.
+        document.getElementById('button-cart-container').style.visibility = 'hidden';
+        cartProductsList = [];
+        //Zera total.
+        total = 0;
+    } else { }
+}
+
+//Busca produto pela barra de navegação
+function searchProduct(text) {
+    const products = document.querySelectorAll('.card');
+    //Busca produtos.
+    products.forEach((e) => {
+        if (e.textContent.toLocaleLowerCase().includes(text.toLocaleLowerCase())) {
+            e.style.display = 'block';
+        } else {
+            e.style.display = 'none';
+        }
+    });
+}
+
+//Chama funções.
+loadingTheme();
+request();
